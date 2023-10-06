@@ -5,8 +5,9 @@ import Sort from '../Components/Sort.jsx';
 import PizzaBlock from '../Components/PizzaBlock';
 import PizzaSkeleton from '../Components/PizzaBlock/PizzaSkeleton.jsx';
 import Pagination from '../Components/Pagination/index.jsx';
+import { SearchContext } from '../App.js';
 
-const Home = ({ searchValue }) => {
+const Home = () => {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [orderType, setOrderType] = React.useState('asc');
@@ -16,6 +17,8 @@ const Home = ({ searchValue }) => {
     name: 'популярности',
     sortProperty: 'rating',
   });
+
+  const { searchValue } = React.useContext(SearchContext);
 
   /* фильрация по статичному массиву внутри pizzas
 .filter((obj) => {
