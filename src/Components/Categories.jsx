@@ -1,7 +1,12 @@
 import React from 'react';
+// import { useSelector, useDispatch } from 'react-redux';
 
 function Categories({ value, onClickCategory }) {
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+
+  // const count = useSelector((state) => state.counter.value);
+  // const inputValue = useSelector((state) => state.sumvalue.value);
+  // const dispatch = useDispatch();
 
   // function onClickCategory(index) {
   //   setActiveIndex(index);
