@@ -23,14 +23,14 @@ const Home = () => {
     dispatch(setCategoryId(id));
   };
 
+  const onChangePage = (num) => {
+    dispatch(setPageCount(num));
+  };
+
   const { searchValue } = React.useContext(SearchContext);
 
   let pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
-
-  const onChangePage = (num) => {
-    dispatch(setPageCount(num));
-  };
 
   React.useEffect(() => {
     setIsLoading(true);
