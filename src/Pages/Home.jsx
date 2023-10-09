@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId } from '../redux/slices/filterSlice.js';
+import { setCategoryId, setPageCount } from '../redux/slices/filterSlice.js';
 import Categories from '../Components/Categories.jsx';
 import Sort from '../Components/Sort.jsx';
 import PizzaBlock from '../Components/PizzaBlock';
@@ -12,12 +12,12 @@ import { SearchContext } from '../App.js';
 
 const Home = () => {
   let dispatch = useDispatch();
-  const { categoryId, sort, order: orderType } = useSelector((state) => state.filter);
+  const { categoryId, sort, order: orderType, pageCount } = useSelector((state) => state.filter);
   const sortType = sort.sortProperty;
 
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
+  // const [currentPage, setCurrentPage] = React.useState(1);
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -28,6 +28,10 @@ const Home = () => {
   let pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
+  const onChangePage = (num) => {
+    dispatch(setPageCount(num));
+  };
+
   React.useEffect(() => {
     setIsLoading(true);
     const url = 'https://64c64bf80a25021fde917f89.mockapi.io/items?';
@@ -36,7 +40,7 @@ const Home = () => {
 
     axios
       .get(
-        `${url}page=${currentPage}&limit=4&${category}&sortBy=${sortType}&order=${orderType}${search}`,
+        `${url}page=${pageCount}&limit=4&${category}&sortBy=${sortType}&order=${orderType}${search}`,
       )
       .then((response) => {
         setItems(response.data);
@@ -52,7 +56,7 @@ const Home = () => {
     //     setIsLoading(false);
     //   });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, orderType, searchValue, currentPage]);
+  }, [categoryId, sortType, orderType, searchValue, pageCount]);
 
   return (
     <div>
@@ -63,7 +67,7 @@ const Home = () => {
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzas}</div>
 
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination onChangePage={onChangePage} />
     </div>
   );
 };
