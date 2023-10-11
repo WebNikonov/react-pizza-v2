@@ -34,7 +34,7 @@ const Home = () => {
 
   const { searchValue } = React.useContext(SearchContext);
 
-  let pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+  let pizzas = items.map((obj, index) => <PizzaBlock key={index} {...obj} />);
   let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
   const fetchPizzas = () => {

@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../../redux/slices/cartSlice';
 
-function PizzaBlock({ title, price, imageUrl, sizes, types }) {
+function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
+  let dispatch = useDispatch();
+  let cartItem = useSelector((state) => state.cart.items.find((obj) => obj.id === id));
   let [activeType, setActiveType] = useState(0);
   let [activeSize, setActiveSize] = useState(0);
+  const typeNames = ['тонкое', 'традиционное', 'деревенское'];
 
   function onClickType(index) {
     setActiveType(index);
   }
 
-  const typeNames = ['тонкое', 'традиционное', 'деревенское'];
+  const addedCount = cartItem ? cartItem.count : 0;
+
+  const onClickAdd = () => {
+    const item = {
+      id,
+      title,
+      price,
+      imageUrl,
+      type: typeNames[activeType],
+      size: sizes[activeSize],
+    };
+
+    dispatch(addItem(item));
+  };
 
   return (
     <div className="pizza-block-wrapper">
@@ -27,10 +45,8 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
             ))}
           </ul>
           <ul>
-            {sizes.map((size) => (
-              <li
-                onClick={() => setActiveSize(size)}
-                className={activeSize === size ? 'active' : ''}>
+            {sizes.map((size, id) => (
+              <li onClick={() => setActiveSize(id)} className={activeSize === id ? 'active' : ''}>
                 {size} см.
               </li>
             ))}
@@ -38,7 +54,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
         </div>
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">от {price} ₽</div>
-          <div className="button button--outline button--add">
+          <button onClick={onClickAdd} className="button button--outline button--add">
             <svg
               width="12"
               height="12"
@@ -50,8 +66,8 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
                 fill="white"></path>
             </svg>
             <span>Добавить</span>
-            <i>{0}</i>
-          </div>
+            {addedCount > 0 && <i>{addedCount}</i>}
+          </button>
         </div>
       </div>
     </div>
