@@ -1,9 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice.js';
+import { fetchPizzas } from '../redux/slices/pizzaSlice.js';
 import Categories from '../Components/Categories.jsx';
 import Sort from '../Components/Sort.jsx';
 import PizzaBlock from '../Components/PizzaBlock';
@@ -17,12 +17,12 @@ import { SearchContext } from '../App.js';
 const Home = () => {
   const navigate = useNavigate();
   let dispatch = useDispatch();
+
+  const { searchValue } = React.useContext(SearchContext);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
-
   const { categoryId, sort, order: orderType, pageCount } = useSelector((state) => state.filter);
-  const [items, setItems] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { items, status } = useSelector((state) => state.pizza);
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -32,25 +32,20 @@ const Home = () => {
     dispatch(setPageCount(num));
   };
 
-  const { searchValue } = React.useContext(SearchContext);
-
-  let pizzas = items.map((obj, index) => <PizzaBlock key={index} {...obj} />);
-  let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
-
-  const fetchPizzas = () => {
-    setIsLoading(true);
+  const getPizzas = async () => {
     const url = 'https://64c64bf80a25021fde917f89.mockapi.io/items?';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue > 0 ? `&search=${searchValue}` : '';
 
-    axios
-      .get(
-        `${url}page=${pageCount}&limit=4&${category}&sortBy=${sort.sortProperty}&order=${orderType}${search}`,
-      )
-      .then((response) => {
-        setItems(response.data);
-        setIsLoading(false);
-      });
+    try {
+      dispatch(fetchPizzas({ url, category, search, sort, pageCount, orderType }));
+
+      console.log('успешный запрос');
+    } catch (error) {
+      alert('Извините, произошла ошибка...');
+    } finally {
+    }
+    window.scrollTo(0, 0);
   };
 
   //Если был первый рендер и параметры изменились
@@ -82,18 +77,21 @@ const Home = () => {
       );
       isSearch.current = true;
     }
-  }, []);
+  }, [dispatch]);
 
   //Если был первый рендер, то запрашиваем пиццы с сервера.
   React.useEffect(() => {
     window.scrollTo(0, 0);
 
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
 
     isSearch.current = false;
   }, [categoryId, sort.sortProperty, orderType, searchValue, pageCount]);
+
+  let pizzas = items.map((obj, index) => <PizzaBlock key={index} {...obj} />);
+  let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
   return (
     <div>
@@ -102,7 +100,22 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
+
+      {status === 'error' ? (
+        <div class="content__error-info">
+          <h2>Произошла ошибка 😕</h2>
+          <p>
+            Не удалось получить пиццы.
+            <br />
+            Извините, попробуйте повторить попытку позже.
+          </p>
+          <a class="button button--black" href="/">
+            <span>Вернуться назад</span>
+          </a>
+        </div>
+      ) : (
+        <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
+      )}
 
       <Pagination onChangePage={onChangePage} />
     </div>
