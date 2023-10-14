@@ -14,7 +14,7 @@ const Cart = () => {
     dispatch(clearItems());
   };
 
-  if (!totalPrice) {
+  if (!totalPrice || items.length === 0) {
     return <CartEmpty />;
   }
 

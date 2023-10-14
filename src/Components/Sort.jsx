@@ -25,7 +25,7 @@ function Sort() {
   }
 
   React.useEffect(() => {
-    console.log('compunentWillMount');
+    console.log('SortCompunentWillMount');
     const handleClickOutside = (event) => {
       let path = event.composedPath();
       if (!path.includes(sortRef.current)) {
