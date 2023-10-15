@@ -1,11 +1,14 @@
 import React from 'react';
 import NotFoundBlock from '../Components/NotFoundBlock';
+import { Link } from 'react-router-dom';
 
 const NotFound = () => {
   return (
     <>
       <NotFoundBlock />
-      <button>Назад</button>
+      <Link to={'/'}>
+        <button>Назад</button>
+      </Link>
     </>
   );
 };
