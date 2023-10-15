@@ -1,9 +1,9 @@
 import React from 'react';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice.js';
-import { fetchPizzas } from '../redux/slices/pizzaSlice.js';
+import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice.js';
 import Categories from '../Components/Categories.jsx';
 import Sort from '../Components/Sort.jsx';
 import PizzaBlock from '../Components/PizzaBlock';
@@ -12,17 +12,20 @@ import Pagination from '../Components/Pagination/index.jsx';
 
 import { list } from '../Components/Sort.jsx';
 
-import { SearchContext } from '../App.js';
-
 const Home = () => {
   const navigate = useNavigate();
   let dispatch = useDispatch();
 
-  const { searchValue } = React.useContext(SearchContext);
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
-  const { categoryId, sort, order: orderType, pageCount } = useSelector((state) => state.filter);
-  const { items, status } = useSelector((state) => state.pizza);
+  const {
+    categoryId,
+    sort,
+    order: orderType,
+    pageCount,
+    searchValue,
+  } = useSelector((state) => state.filter);
+  const { items, status } = useSelector(selectPizzaData);
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -35,7 +38,7 @@ const Home = () => {
   const getPizzas = async () => {
     const url = 'https://64c64bf80a25021fde917f89.mockapi.io/items?';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
-    const search = searchValue > 0 ? `&search=${searchValue}` : '';
+    const search = searchValue ? `&search=${searchValue}` : '';
 
     try {
       dispatch(fetchPizzas({ url, category, search, sort, pageCount, orderType }));
@@ -90,7 +93,7 @@ const Home = () => {
     isSearch.current = false;
   }, [categoryId, sort.sortProperty, orderType, searchValue, pageCount]);
 
-  let pizzas = items.map((obj, index) => <PizzaBlock key={index} {...obj} />);
+  let pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
   return (

@@ -5,13 +5,18 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import { store } from '../src/redux/store.js';
+import { store } from './redux/store.js';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const rootElem = document.getElementById('root')
+
+if (rootElem) {
+  const root = ReactDOM.createRoot(rootElem);
 root.render(
   <BrowserRouter>
     <Provider store={store}>
       <App />
     </Provider>
   </BrowserRouter>,
-);
+
+)
+}
