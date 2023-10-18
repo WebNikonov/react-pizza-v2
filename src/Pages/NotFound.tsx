@@ -1,8 +1,8 @@
 import React from 'react';
-import NotFoundBlock from '../Components/NotFoundBlock';
+import NotFoundBlock from '..//Components/NotFoundBlock/index';
 import { Link } from 'react-router-dom';
 
-const NotFound = () => {
+const NotFound: React.FC = () => {
   return (
     <>
       <NotFoundBlock />

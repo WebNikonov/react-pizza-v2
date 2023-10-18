@@ -1,7 +1,7 @@
 import React from 'react';
 import Home from './Pages/Home';
 import Cart from './Pages/Cart';
-import NotFound from './Pages/NotFound.jsx';
+import NotFound from './Pages/NotFound';
 
 import { Routes, Route } from 'react-router-dom';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import clearCart from '../assets/img/empty-cart.png';
 import { Link } from 'react-router-dom';
 

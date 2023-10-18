@@ -4,12 +4,20 @@ import styles from './Search.module.scss';
 import { setSearchValue } from '../../redux/slices/filterSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
+interface RootSearchValueState {
+  filter: {
+    searchValue: null | string
+  }
+  
+}
+
 const Search = () => {
   const dispatch = useDispatch();
   let [value, setValue] = React.useState('');
-  const { searchValue } = useSelector((state) => state.filter.searchValue);
+  const  searchValue = useSelector((state: RootSearchValueState) => state.filter.searchValue);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const inputRef = React.useRef();
+  console.log(searchValue);
 
   let updateSearchValue = React.useCallback(
     debounce((str) => {
@@ -21,10 +29,10 @@ const Search = () => {
   const onClickClear = () => {
     dispatch(setSearchValue(''));
     setValue('');
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
 
-  const onChangeInput = (event) => {
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     updateSearchValue(event.target.value);
   };
@@ -48,7 +56,7 @@ const Search = () => {
       />
       {searchValue && (
         <svg
-          onClick={() => onClickClear()}
+          onClick={onClickClear}
           className={styles.close}
           fill="none"
           height="24"

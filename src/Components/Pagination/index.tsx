@@ -3,8 +3,13 @@ import ReactPaginate from 'react-paginate';
 import styles from './Pagination.module.scss';
 import { useSelector } from 'react-redux';
 
-const Pagination = ({ onChangePage }) => {
-  const currentPage = useSelector((state) => state.filter.pageCount);
+
+type PaginationProps = {
+  onChangePage: (page: number) => void;
+}
+
+const Pagination: React.FC<PaginationProps>= ({ onChangePage }) => {
+  const currentPage = useSelector((state: any) => state.filter.pageCount);
   return (
     <ReactPaginate
       className={styles.root}

@@ -2,7 +2,14 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort, setOrder, selectSort } from '../redux/slices/filterSlice.js';
 
-export const list = [
+
+
+type ListType = {
+  name: string;
+  sortProperty: string;
+}
+
+export const list:ListType[] = [
   { name: 'популярности', sortProperty: 'rating' },
   { name: 'цене', sortProperty: 'price' },
   { name: 'алфавиту', sortProperty: 'title' },
@@ -11,30 +18,30 @@ export const list = [
 function Sort() {
   const dispatch = useDispatch();
   const sort = useSelector(selectSort);
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
   let [open, setOpen] = React.useState(false);
 
-  function onChoiseItem(obj) {
+  function onChoiseItem(obj: ListType) {
     dispatch(setSort(obj));
     setOpen(false);
   }
 
-  function onChangeOrder(str) {
+  function onChangeOrder(str: string) {
     dispatch(setOrder(str));
   }
 
+
+
   React.useEffect(() => {
-    console.log('SortCompunentWillMount');
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       let path = event.composedPath();
-      if (!path.includes(sortRef.current)) {
+      if (sortRef.current && !path.includes(sortRef.current)) {
         setOpen(false);
       }
 
       return () => {
         document.body.removeEventListener('click', handleClickOutside);
-        console.log('componentDidRemove');
       };
     };
 

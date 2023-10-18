@@ -7,8 +7,6 @@ export const fetchPizzas = createAsyncThunk('pizza/fetchByIdStatus', async (para
     `${url}page=${pageCount}&limit=4&${category}&sortBy=${sort.sortProperty}&order=${orderType}${search}`,
   );
 
-  console.log(ThunkApi);
-
   return data;
 });
 

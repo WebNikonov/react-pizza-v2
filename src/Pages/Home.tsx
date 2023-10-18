@@ -1,18 +1,18 @@
 import React from 'react';
 import qs from 'qs';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice.js';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice.js';
-import Categories from '../Components/Categories.jsx';
-import Sort from '../Components/Sort.jsx';
-import PizzaBlock from '../Components/PizzaBlock';
+import Categories from '../Components/Categories';
+import Sort from '../Components/Sort';
+import PizzaBlock from '../Components/PizzaBlock/index';
 import PizzaSkeleton from '../Components/PizzaBlock/PizzaSkeleton.jsx';
-import Pagination from '../Components/Pagination/index.jsx';
+import Pagination from '../Components/Pagination/index';
 
-import { list } from '../Components/Sort.jsx';
+import { list } from '../Components/Sort';
 
-const Home = () => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
   let dispatch = useDispatch();
 
@@ -24,14 +24,14 @@ const Home = () => {
     order: orderType,
     pageCount,
     searchValue,
-  } = useSelector((state) => state.filter);
+  } = useSelector((state: any) => state.filter);
   const { items, status } = useSelector(selectPizzaData);
 
-  const onClickCategory = (id) => {
-    dispatch(setCategoryId(id));
+  const onChangeCategory = (idx: number) => {
+    dispatch(setCategoryId(idx));
   };
 
-  const onChangePage = (num) => {
+  const onChangePage = (num: number) => {
     dispatch(setPageCount(num));
   };
 
@@ -41,9 +41,18 @@ const Home = () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
     try {
-      dispatch(fetchPizzas({ url, category, search, sort, pageCount, orderType }));
+      dispatch(
+        //@ts-ignore
+        fetchPizzas({
+        url,
+        category,
+        search,
+        sort,
+        pageCount,
+        orderType
+        }));
 
-      console.log('успешный запрос');
+     
     } catch (error) {
       alert('Извините, произошла ошибка...');
     } finally {
@@ -93,26 +102,26 @@ const Home = () => {
     isSearch.current = false;
   }, [categoryId, sort.sortProperty, orderType, searchValue, pageCount]);
 
-  let pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+  let pizzas = items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
   let skeletons = [...new Array(6)].map((_, index) => <PizzaSkeleton key={index} />);
 
   return (
     <div>
       <div className="content__top">
-        <Categories value={categoryId} onClickCategory={(id) => onClickCategory(id)} />
+        <Categories value={categoryId} onChangeCategory={(id) => onChangeCategory(id)} />
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
 
       {status === 'error' ? (
-        <div class="content__error-info">
+        <div className="content__error-info">
           <h2>Произошла ошибка 😕</h2>
           <p>
             Не удалось получить пиццы.
             <br />
             Извините, попробуйте повторить попытку позже.
           </p>
-          <a class="button button--black" href="/">
+          <a className="button button--black" href="/">
             <span>Вернуться назад</span>
           </a>
         </div>
