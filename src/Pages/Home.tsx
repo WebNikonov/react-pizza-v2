@@ -2,8 +2,8 @@ import React from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice.js';
-import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice.js';
+import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 import Categories from '../Components/Categories';
 import Sort from '../Components/Sort';
 import PizzaBlock from '../Components/PizzaBlock/index';
@@ -11,6 +11,14 @@ import PizzaSkeleton from '../Components/PizzaBlock/PizzaSkeleton.jsx';
 import Pagination from '../Components/Pagination/index';
 
 import { list } from '../Components/Sort';
+
+
+type SortType = {
+  searchValue: string;
+  categoryId: number;
+  sortProperty: string;
+}
+
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +44,6 @@ const Home: React.FC = () => {
   };
 
   const getPizzas = async () => {
-    const url = 'https://64c64bf80a25021fde917f89.mockapi.io/items?';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
@@ -44,7 +51,6 @@ const Home: React.FC = () => {
       dispatch(
         //@ts-ignore
         fetchPizzas({
-        url,
         category,
         search,
         sort,
@@ -75,18 +81,23 @@ const Home: React.FC = () => {
     isMounted.current = true;
   }, [categoryId, pageCount, sort.sortProperty, navigate]);
 
+
+
   //Если был первый рендер, то проверяем URL-параметры и сохраняем в redux
   React.useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
 
       let sort = list.find((obj) => obj.sortProperty === params.sortProperty);
-      dispatch(
-        setFilters({
-          ...params,
-          sort,
-        }),
-      );
+      if (sort) {
+        dispatch(
+          //@ts-ignore
+          setFilters({
+            ...params,
+            sort,
+          }),
+        );
+      }
       isSearch.current = true;
     }
   }, [dispatch]);
