@@ -11,6 +11,18 @@ function Header() {
   const location = useLocation();
 
   const totalCount = items.reduce((acc: number, item: any) => acc + item.count, 0);
+  const isMounted = React.useRef(false);
+
+  React.useEffect(() => {
+if (isMounted.current) {
+  const json = JSON.stringify(items);
+  localStorage.setItem('cart', json);
+
+}
+    isMounted.current = true;
+  }, [items])
+
+
 
   return (
     <div className="header">

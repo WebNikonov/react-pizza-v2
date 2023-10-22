@@ -42,7 +42,8 @@ const { id, count, imageUrl, price, size, title, type } = props;
           </p>
         </div>
         <div className="cart__item-count">
-          <div
+          <button
+            disabled = {count === 1}
             onClick={oncClickMinus}
             className="button button--outline button--circle cart__item-count-minus">
             <svg
@@ -60,7 +61,7 @@ const { id, count, imageUrl, price, size, title, type } = props;
                 fill="#EB5A1E"
               />
             </svg>
-          </div>
+          </button>
           <b>{count}</b>
           <div
             onClick={onClickPlus}

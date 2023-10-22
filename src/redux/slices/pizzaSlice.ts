@@ -13,7 +13,7 @@ type FetchPizzasArgs = {
   category: string;
   search: string;
   sort: Sort;
-  pageCount: string;
+  pageCount: number;
   orderType: string;
 }
 
@@ -56,7 +56,7 @@ export type SearchPizzaParams = {
 export const fetchPizzas = createAsyncThunk<PizzaItem[], FetchPizzasArgs> ('pizza/fetchByIdStatus', async (params) => {
   const { category, search, sort, pageCount, orderType } = params;
   const { data } = await axios.get<PizzaItem[]>(
-    `https://64c64bf80a25021fde917f89.mockapi.io/items?page=${pageCount}&limit=4&${category}&sortBy=${sort}&order=${orderType}${search}`,
+    `https://64c64bf80a25021fde917f89.mockapi.io/items?page=${pageCount}&limit=4&${category}&sortBy=${sort.sortProperty}&order=${orderType}${search}`,
   );
 
   return data ;

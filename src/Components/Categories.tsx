@@ -1,5 +1,7 @@
+
 import React from 'react';
 // import { useSelector, useDispatch } from 'react-redux';
+
 
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
@@ -8,9 +10,8 @@ type CategoryProps = {
   onChangeCategory: (idx: number) => void;
 };
 
-const Categories: React.FC<CategoryProps>  = ({ value, onChangeCategory }) =>  {
+const Categories: React.FC<CategoryProps>  = React.memo(({ value, onChangeCategory }) =>  {
   
-
   return (
     <div className="categories">
       <ul>
@@ -26,5 +27,5 @@ const Categories: React.FC<CategoryProps>  = ({ value, onChangeCategory }) =>  {
     </div>
   );
 }
-
+)
 export default Categories;

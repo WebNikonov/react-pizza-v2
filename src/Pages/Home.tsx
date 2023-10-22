@@ -2,7 +2,7 @@ import React from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
+import { setCategoryId, setPageCount, setFilters, selectFilterSort } from '../redux/slices/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 import Categories from '../Components/Categories';
 import Sort from '../Components/Sort';
@@ -32,12 +32,12 @@ const Home: React.FC = () => {
     order: orderType,
     pageCount,
     searchValue,
-  } = useSelector((state: any) => state.filter);
+  } = useSelector(selectFilterSort);
   const { items, status } = useSelector(selectPizzaData);
 
-  const onChangeCategory = (idx: number) => {
+  const onChangeCategory = React.useCallback((idx: number) => {
     dispatch(setCategoryId(idx));
-  };
+  }, []);
 
   const onChangePage = (num: number) => {
     dispatch(setPageCount(num));
@@ -120,7 +120,7 @@ const Home: React.FC = () => {
     <div>
       <div className="content__top">
         <Categories value={categoryId} onChangeCategory={(id) => onChangeCategory(id)} />
-        <Sort />
+        <Sort value={sort}/>
       </div>
       <h2 className="content__title">Все пиццы</h2>
 
